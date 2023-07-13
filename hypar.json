@@ -1,0 +1,36 @@
+{
+  "$schema": "https://hypar.io/Schemas/Function.json",
+  "id": "8ed99866-2926-41ad-bfae-e966dd6505f1",
+  "name": "Elements 2.0 Sample",
+  "description": "The Elements20Sample function.",
+  "language": "C#",
+  "overrides": {
+    "Lines": {
+      "context": "[*discriminator=Elements.Linework]",
+      "identity": {
+        "Add Id": {
+          "type": "string"
+        }
+      },
+      "behaviors": {
+        "add": {
+          "schema": {
+            "Polyline": {
+              "$ref": "https://schemas.hypar.io/Polyline.json"
+            }
+          }
+        },
+        "remove": true
+      },
+      "schema": {
+        "Polyline": {
+          "$ref": "https://schemas.hypar.io/Polyline.json"
+        }
+      }
+    }
+  },
+  "outputs": [],
+  "repository_url": "https://github.com/hypar-io/function",
+  "last_updated": "0001-01-01T00:00:00",
+  "cli_version": "1.8.0-alpha.1"
+}
