@@ -27,6 +27,29 @@
           "$ref": "https://schemas.hypar.io/Polyline.json"
         }
       }
+    },
+    "Curves": {
+      "context": "[*discriminator=Elements.Curvework]",
+      "identity": {
+        "Add Id": {
+          "type": "string"
+        }
+      },
+      "behaviors": {
+        "add": {
+          "schema": {
+            "Polyline": {
+              "$ref": "https://schemas.hypar.io/Polyline.json"
+            }
+          }
+        },
+        "remove": true
+      },
+      "schema": {
+        "Polyline": {
+          "$ref": "https://schemas.hypar.io/Polyline.json"
+        }
+      }
     }
   },
   "outputs": [],

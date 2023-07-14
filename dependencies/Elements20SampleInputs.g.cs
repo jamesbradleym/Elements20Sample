@@ -59,17 +59,18 @@ namespace Elements20Sample
         public Overrides() { }
         
         [Newtonsoft.Json.JsonConstructor]
-        public Overrides(OverrideAdditions @additions, OverrideRemovals @removals, IList<LinesOverride> @lines)
+        public Overrides(OverrideAdditions @additions, OverrideRemovals @removals, IList<LinesOverride> @lines, IList<CurvesOverride> @curves)
         {
             var validator = Validator.Instance.GetFirstValidatorForType<Overrides>();
             if(validator != null)
             {
-                validator.PreConstruct(new object[]{ @additions, @removals, @lines});
+                validator.PreConstruct(new object[]{ @additions, @removals, @lines, @curves});
             }
         
             this.Additions = @additions ?? this.Additions;
             this.Removals = @removals ?? this.Removals;
             this.Lines = @lines ?? this.Lines;
+            this.Curves = @curves ?? this.Curves;
         
             if(validator != null)
             {
@@ -86,6 +87,9 @@ namespace Elements20Sample
         [Newtonsoft.Json.JsonProperty("Lines", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public IList<LinesOverride> Lines { get; set; } = new List<LinesOverride>();
     
+        [Newtonsoft.Json.JsonProperty("Curves", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public IList<CurvesOverride> Curves { get; set; } = new List<CurvesOverride>();
+    
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.21.0 (Newtonsoft.Json v13.0.0.0)")]
@@ -96,15 +100,16 @@ namespace Elements20Sample
         public OverrideAdditions() { }
         
         [Newtonsoft.Json.JsonConstructor]
-        public OverrideAdditions(IList<LinesOverrideAddition> @lines)
+        public OverrideAdditions(IList<LinesOverrideAddition> @lines, IList<CurvesOverrideAddition> @curves)
         {
             var validator = Validator.Instance.GetFirstValidatorForType<OverrideAdditions>();
             if(validator != null)
             {
-                validator.PreConstruct(new object[]{ @lines});
+                validator.PreConstruct(new object[]{ @lines, @curves});
             }
         
             this.Lines = @lines ?? this.Lines;
+            this.Curves = @curves ?? this.Curves;
         
             if(validator != null)
             {
@@ -114,6 +119,9 @@ namespace Elements20Sample
     
         [Newtonsoft.Json.JsonProperty("Lines", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public IList<LinesOverrideAddition> Lines { get; set; } = new List<LinesOverrideAddition>();
+    
+        [Newtonsoft.Json.JsonProperty("Curves", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public IList<CurvesOverrideAddition> Curves { get; set; } = new List<CurvesOverrideAddition>();
     
     }
     
@@ -125,15 +133,16 @@ namespace Elements20Sample
         public OverrideRemovals() { }
         
         [Newtonsoft.Json.JsonConstructor]
-        public OverrideRemovals(IList<LinesOverrideRemoval> @lines)
+        public OverrideRemovals(IList<LinesOverrideRemoval> @lines, IList<CurvesOverrideRemoval> @curves)
         {
             var validator = Validator.Instance.GetFirstValidatorForType<OverrideRemovals>();
             if(validator != null)
             {
-                validator.PreConstruct(new object[]{ @lines});
+                validator.PreConstruct(new object[]{ @lines, @curves});
             }
         
             this.Lines = @lines ?? this.Lines;
+            this.Curves = @curves ?? this.Curves;
         
             if(validator != null)
             {
@@ -143,6 +152,9 @@ namespace Elements20Sample
     
         [Newtonsoft.Json.JsonProperty("Lines", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public IList<LinesOverrideRemoval> Lines { get; set; } = new List<LinesOverrideRemoval>();
+    
+        [Newtonsoft.Json.JsonProperty("Curves", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public IList<CurvesOverrideRemoval> Curves { get; set; } = new List<CurvesOverrideRemoval>();
     
     }
     
@@ -183,6 +195,41 @@ namespace Elements20Sample
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.21.0 (Newtonsoft.Json v13.0.0.0)")]
     
+    public partial class CurvesOverride 
+    
+    {
+        [Newtonsoft.Json.JsonConstructor]
+        public CurvesOverride(string @id, CurvesIdentity @identity, CurvesValue @value)
+        {
+            var validator = Validator.Instance.GetFirstValidatorForType<CurvesOverride>();
+            if(validator != null)
+            {
+                validator.PreConstruct(new object[]{ @id, @identity, @value});
+            }
+        
+            this.Id = @id;
+            this.Identity = @identity;
+            this.Value = @value;
+        
+            if(validator != null)
+            {
+                validator.PostConstruct(this);
+            }
+        }
+    
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Id { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("Identity", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public CurvesIdentity Identity { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("Value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public CurvesValue Value { get; set; }
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.21.0 (Newtonsoft.Json v13.0.0.0)")]
+    
     public partial class LinesOverrideAddition 
     
     {
@@ -218,6 +265,41 @@ namespace Elements20Sample
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.21.0 (Newtonsoft.Json v13.0.0.0)")]
     
+    public partial class CurvesOverrideAddition 
+    
+    {
+        [Newtonsoft.Json.JsonConstructor]
+        public CurvesOverrideAddition(string @id, CurvesIdentity @identity, CurvesOverrideAdditionValue @value)
+        {
+            var validator = Validator.Instance.GetFirstValidatorForType<CurvesOverrideAddition>();
+            if(validator != null)
+            {
+                validator.PreConstruct(new object[]{ @id, @identity, @value});
+            }
+        
+            this.Id = @id;
+            this.Identity = @identity;
+            this.Value = @value;
+        
+            if(validator != null)
+            {
+                validator.PostConstruct(this);
+            }
+        }
+    
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Id { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("Identity", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public CurvesIdentity Identity { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("Value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public CurvesOverrideAdditionValue Value { get; set; }
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.21.0 (Newtonsoft.Json v13.0.0.0)")]
+    
     public partial class LinesOverrideRemoval 
     
     {
@@ -244,6 +326,37 @@ namespace Elements20Sample
     
         [Newtonsoft.Json.JsonProperty("Identity", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public LinesIdentity Identity { get; set; }
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.21.0 (Newtonsoft.Json v13.0.0.0)")]
+    
+    public partial class CurvesOverrideRemoval 
+    
+    {
+        [Newtonsoft.Json.JsonConstructor]
+        public CurvesOverrideRemoval(string @id, CurvesIdentity @identity)
+        {
+            var validator = Validator.Instance.GetFirstValidatorForType<CurvesOverrideRemoval>();
+            if(validator != null)
+            {
+                validator.PreConstruct(new object[]{ @id, @identity});
+            }
+        
+            this.Id = @id;
+            this.Identity = @identity;
+        
+            if(validator != null)
+            {
+                validator.PostConstruct(this);
+            }
+        }
+    
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Id { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("Identity", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public CurvesIdentity Identity { get; set; }
     
     }
     
@@ -303,6 +416,60 @@ namespace Elements20Sample
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.21.0 (Newtonsoft.Json v13.0.0.0)")]
     
+    public partial class CurvesIdentity 
+    
+    {
+        [Newtonsoft.Json.JsonConstructor]
+        public CurvesIdentity(string @addId)
+        {
+            var validator = Validator.Instance.GetFirstValidatorForType<CurvesIdentity>();
+            if(validator != null)
+            {
+                validator.PreConstruct(new object[]{ @addId});
+            }
+        
+            this.AddId = @addId;
+        
+            if(validator != null)
+            {
+                validator.PostConstruct(this);
+            }
+        }
+    
+        [Newtonsoft.Json.JsonProperty("Add Id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string AddId { get; set; }
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.21.0 (Newtonsoft.Json v13.0.0.0)")]
+    
+    public partial class CurvesValue 
+    
+    {
+        [Newtonsoft.Json.JsonConstructor]
+        public CurvesValue(Polyline @polyline)
+        {
+            var validator = Validator.Instance.GetFirstValidatorForType<CurvesValue>();
+            if(validator != null)
+            {
+                validator.PreConstruct(new object[]{ @polyline});
+            }
+        
+            this.Polyline = @polyline;
+        
+            if(validator != null)
+            {
+                validator.PostConstruct(this);
+            }
+        }
+    
+        [Newtonsoft.Json.JsonProperty("Polyline", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Polyline Polyline { get; set; }
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.21.0 (Newtonsoft.Json v13.0.0.0)")]
+    
     public partial class LinesOverrideAdditionValue 
     
     {
@@ -310,6 +477,33 @@ namespace Elements20Sample
         public LinesOverrideAdditionValue(Polyline @polyline)
         {
             var validator = Validator.Instance.GetFirstValidatorForType<LinesOverrideAdditionValue>();
+            if(validator != null)
+            {
+                validator.PreConstruct(new object[]{ @polyline});
+            }
+        
+            this.Polyline = @polyline;
+        
+            if(validator != null)
+            {
+                validator.PostConstruct(this);
+            }
+        }
+    
+        [Newtonsoft.Json.JsonProperty("Polyline", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Polyline Polyline { get; set; }
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.21.0 (Newtonsoft.Json v13.0.0.0)")]
+    
+    public partial class CurvesOverrideAdditionValue 
+    
+    {
+        [Newtonsoft.Json.JsonConstructor]
+        public CurvesOverrideAdditionValue(Polyline @polyline)
+        {
+            var validator = Validator.Instance.GetFirstValidatorForType<CurvesOverrideAdditionValue>();
             if(validator != null)
             {
                 validator.PreConstruct(new object[]{ @polyline});
