@@ -151,21 +151,26 @@ namespace Elements20Sample
 
             var parameter = input.Parameter;
             var directionMod = 0.01;
+            var size = 1.0;
+            var subsize = 0.5;
             foreach (var curve in curves)
             {
                 if (curve is Polylinework _polylinework)
                 {
-                    foreach (var segment in _polylinework.Polyline.Segments())
+                    var point = _polylinework.Polyline.PointAt(parameter * _polylinework.Polyline.Segments().Count());
+                    var direction = _polylinework.Polyline.Start - _polylinework.Polyline.End;
+                    var mass = MassAtPointAndOrientation(size, point, direction);
+                    output.Model.AddElement(mass);
+
+                    if (_polylinework.Polyline.Segments().Count() > 1)
                     {
-                        var point = segment.PointAt(parameter * segment.Length());
-                        var direction = segment.Direction();
-                        var size = 1;
-                        var mass = new Mass(Polygon.Rectangle(size, size), size);
-                        var center = mass.Bounds.Center() + new Vector3(0, 0, size / 2.0) + mass.Transform.Origin;
-
-                        mass.Transform = new Transform(-1 * center).Concatenated(new Transform(new Plane(point, direction)));
-
-                        output.Model.AddElement(mass);
+                        foreach (var segment in _polylinework.Polyline.Segments())
+                        {
+                            var subpoint = segment.PointAt(parameter * segment.Length());
+                            var subdirection = segment.Direction();
+                            var submass = MassAtPointAndOrientation(subsize, subpoint, subdirection);
+                            output.Model.AddElement(submass);
+                        }
                     }
                 }
                 else if (curve is Linework _linework)
@@ -173,22 +178,14 @@ namespace Elements20Sample
                     var parameterMod = parameter * _linework.Line.Length();
                     var point = _linework.Line.PointAt(parameterMod);
                     var direction = _linework.Line.Direction();
-                    var size = 1;
-                    var mass = new Mass(Polygon.Rectangle(size, size), size);
-                    var center = mass.Bounds.Center() + new Vector3(0, 0, size / 2.0) + mass.Transform.Origin;
-
-                    mass.Transform = new Transform(-1 * center).Concatenated(new Transform(new Plane(point, direction)));
-
+                    var mass = MassAtPointAndOrientation(size, point, direction);
                     output.Model.AddElement(mass);
                 }
                 else if (curve is Bezierwork _bezierwork)
                 {
                     var point = _bezierwork.Bezier.PointAt(parameter);
                     var direction = _bezierwork.Bezier.PointAt(parameter) - _bezierwork.Bezier.PointAt(parameter + directionMod);
-                    var size = 1;
-                    var mass = new Mass(Polygon.Rectangle(size, size), size);
-                    var center = mass.Bounds.Center() + new Vector3(0, 0, size / 2.0) + mass.Transform.Origin;
-                    mass.Transform = new Transform(-1 * center).Concatenated(new Transform(new Plane(point, direction)));
+                    var mass = MassAtPointAndOrientation(size, point, direction);
                     output.Model.AddElement(mass);
                 }
                 else if (curve is Circlework _circlework)
@@ -196,10 +193,7 @@ namespace Elements20Sample
                     var parameterMod = parameter * (2 * Math.PI);
                     var point = _circlework.Circle.PointAt(parameterMod);
                     var direction = _circlework.Circle.PointAt(parameterMod) - _circlework.Circle.PointAt(parameterMod + directionMod);
-                    var size = 1;
-                    var mass = new Mass(Polygon.Rectangle(size, size), size);
-                    var center = mass.Bounds.Center() + new Vector3(0, 0, size / 2.0) + mass.Transform.Origin;
-                    mass.Transform = new Transform(-1 * center).Concatenated(new Transform(new Plane(point, direction)));
+                    var mass = MassAtPointAndOrientation(size, point, direction);
                     output.Model.AddElement(mass);
                 }
                 else if (curve is Arcwork _arcwork)
@@ -207,10 +201,7 @@ namespace Elements20Sample
                     var parameterMod = parameter * _arcwork.Arc.Domain.Max;
                     var point = _arcwork.Arc.PointAt(parameterMod);
                     var direction = _arcwork.Arc.PointAt(parameterMod) - _arcwork.Arc.PointAt(parameterMod + directionMod);
-                    var size = 1;
-                    var mass = new Mass(Polygon.Rectangle(size, size), size);
-                    var center = mass.Bounds.Center() + new Vector3(0, 0, size / 2.0) + mass.Transform.Origin;
-                    mass.Transform = new Transform(-1 * center).Concatenated(new Transform(new Plane(point, direction)));
+                    var mass = MassAtPointAndOrientation(size, point, direction);
                     output.Model.AddElement(mass);
                 }
                 else if (curve is Ellipse _ellipse)
@@ -218,15 +209,20 @@ namespace Elements20Sample
                     var parameterMod = parameter * (2 * Math.PI);
                     var point = _ellipse.PointAt(parameterMod);
                     var direction = _ellipse.PointAt(parameterMod) - _ellipse.PointAt(parameterMod + directionMod);
-                    var size = 1;
-                    var mass = new Mass(Polygon.Rectangle(size, size), size);
-                    var center = mass.Bounds.Center() + new Vector3(0, 0, size / 2.0) + mass.Transform.Origin;
-                    mass.Transform = new Transform(-1 * center).Concatenated(new Transform(new Plane(point, direction)));
+                    var mass = MassAtPointAndOrientation(size, point, direction);
                     output.Model.AddElement(mass);
                 }
             }
 
             return output;
+        }
+
+        public static Mass MassAtPointAndOrientation(Double size, Vector3 point, Vector3 direction)
+        {
+            var mass = new Mass(Polygon.Rectangle(size, size), size);
+            var center = mass.Bounds.Center() + new Vector3(0, 0, size / 2.0) + mass.Transform.Origin;
+            mass.Transform = new Transform(-1 * center).Concatenated(new Transform(new Plane(point, direction)));
+            return mass;
         }
     }
 }
