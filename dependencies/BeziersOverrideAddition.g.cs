@@ -6,13 +6,13 @@ using System.Linq;
 namespace Elements20Sample
 {
 	/// <summary>
-	/// Override metadata for CurvesOverrideAddition
+	/// Override metadata for BeziersOverrideAddition
 	/// </summary>
-	public partial class CurvesOverrideAddition : IOverride
+	public partial class BeziersOverrideAddition : IOverride
 	{
-        public static string Name = "Curves Addition";
+        public static string Name = "Beziers Addition";
         public static string Dependency = null;
-        public static string Context = "[*discriminator=Elements.Curvework]";
+        public static string Context = "[*discriminator=Elements.Bezierwork]";
 		public static string Paradigm = "Edit";
 
         /// <summary>

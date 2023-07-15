@@ -5,33 +5,33 @@ using Newtonsoft.Json;
 
 namespace Elements
 {
-    public class Linework : GeometricElement
+    public class Polylinework : GeometricElement
     {
 
-        public Line Line { get; set; }
+        public Polyline Polyline { get; set; }
         [JsonProperty("Add Id")]
         public string AddId { get; set; }
 
-        public Linework(LinesOverrideAddition add)
+        public Polylinework(PolylinesOverrideAddition add)
         {
-            this.Line = add.Value.Line;
+            this.Polyline = add.Value.Polyline;
             this.AddId = add.Id;
 
             SetMaterial();
         }
-        public Linework(Line line)
+        public Polylinework(Polyline polyline)
         {
-            Line = line;
+            Polyline = polyline;
             SetMaterial();
         }
-        public bool Match(LinesIdentity identity)
+        public bool Match(PolylinesIdentity identity)
         {
             return identity.AddId == this.AddId;
         }
 
-        public Linework Update(LinesOverride edit)
+        public Polylinework Update(PolylinesOverride edit)
         {
-            this.Line = edit.Value.Line;
+            this.Polyline = edit.Value.Polyline;
             return this;
         }
 
@@ -54,25 +54,28 @@ namespace Elements
             var circleRadius = 0.1;
             var pointRadius = 0.2;
 
-
-            var lineVertices = new List<Vector3>() { Line.Start, Line.End };
             // Create an extruded circle along each line segment of the polyline
+            for (int i = 0; i < Polyline.Vertices.Count - 1; i++)
+            {
+                var start = Polyline.Vertices[i];
+                var end = Polyline.Vertices[i + 1];
+                var direction = Polyline.Segments()[i].Direction();
+                var length = Polyline.Segments()[i].Length();
 
-            var direction = Line.Direction();
-            var length = Line.Length();
+                var circle = Polygon.Circle(circleRadius, 10);
+                circle.Transform(new Transform(new Plane(start, direction)));
 
-            var circle = Polygon.Circle(circleRadius, 10);
-            circle.Transform(new Transform(new Plane(Line.Start, direction)));
+                // Create an extruded circle along the line segment
+                var extrusion = new Extrude(circle, length, direction, false);
 
-            // Create an extruded circle along the line segment
-            var extrusion = new Extrude(circle, length, direction, false);
-
-            rep.SolidOperations.Add(extrusion);
+                rep.SolidOperations.Add(extrusion);
+            }
 
             // Add a spherical point at each vertex of the polyline
-            foreach (var vertex in lineVertices)
+            foreach (var vertex in Polyline.Vertices)
             {
                 var sphere = Mesh.Sphere(pointRadius, 10);
+
 
                 HashSet<Geometry.Vertex> modifiedVertices = new HashSet<Geometry.Vertex>();
                 // Translate the vertices of the mesh to center it at the origin

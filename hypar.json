@@ -15,6 +15,29 @@
       "behaviors": {
         "add": {
           "schema": {
+            "Line": {
+              "$ref": "https://schemas.hypar.io/Line.json"
+            }
+          }
+        },
+        "remove": true
+      },
+      "schema": {
+        "Line": {
+          "$ref": "https://schemas.hypar.io/Line.json"
+        }
+      }
+    },
+    "Polylines": {
+      "context": "[*discriminator=Elements.Polylinework]",
+      "identity": {
+        "Add Id": {
+          "type": "string"
+        }
+      },
+      "behaviors": {
+        "add": {
+          "schema": {
             "Polyline": {
               "$ref": "https://schemas.hypar.io/Polyline.json"
             }
@@ -28,8 +51,8 @@
         }
       }
     },
-    "Curves": {
-      "context": "[*discriminator=Elements.Curvework]",
+    "Beziers": {
+      "context": "[*discriminator=Elements.Bezierwork]",
       "identity": {
         "Add Id": {
           "type": "string"

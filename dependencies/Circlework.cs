@@ -5,35 +5,35 @@ using Newtonsoft.Json;
 
 namespace Elements
 {
-    public class Linework : GeometricElement
+    public class Circlework : GeometricElement
     {
 
-        public Line Line { get; set; }
+        public Circle Circle { get; set; }
         [JsonProperty("Add Id")]
         public string AddId { get; set; }
 
-        public Linework(LinesOverrideAddition add)
-        {
-            this.Line = add.Value.Line;
-            this.AddId = add.Id;
+        // public Circlework(CirclesOverrideAddition add)
+        // {
+        //     this.Circle = add.Value.Circle;
+        //     this.AddId = add.Id;
 
+        //     SetMaterial();
+        // }
+        public Circlework(Circle circle)
+        {
+            Circle = circle;
             SetMaterial();
         }
-        public Linework(Line line)
-        {
-            Line = line;
-            SetMaterial();
-        }
-        public bool Match(LinesIdentity identity)
-        {
-            return identity.AddId == this.AddId;
-        }
+        // public bool Match(CirclesIdentity identity)
+        // {
+        //     return identity.AddId == this.AddId;
+        // }
 
-        public Linework Update(LinesOverride edit)
-        {
-            this.Line = edit.Value.Line;
-            return this;
-        }
+        // public Circlework Update(CirclesOverride edit)
+        // {
+        //     this.Circle = edit.Value.Circle;
+        //     return this;
+        // }
 
         public void SetMaterial()
         {
@@ -50,27 +50,24 @@ namespace Elements
             var rep = new Representation();
             var solidRep = new Solid();
 
-            // Define parameters for the extruded circle and spherical point
+            // Define parameters for the 3D circlework and spherical point
             var circleRadius = 0.1;
             var pointRadius = 0.2;
 
+            var circleVertices = new List<Vector3>() { Circle.PointAt(0) };
 
-            var lineVertices = new List<Vector3>() { Line.Start, Line.End };
-            // Create an extruded circle along each line segment of the polyline
-
-            var direction = Line.Direction();
-            var length = Line.Length();
+            var direction = Circle.PointAt(0) - Circle.PointAt(0.1);
+            var length = Math.PI * Math.Pow(Circle.Radius, 2);
 
             var circle = Polygon.Circle(circleRadius, 10);
-            circle.Transform(new Transform(new Plane(Line.Start, direction)));
 
-            // Create an extruded circle along the line segment
-            var extrusion = new Extrude(circle, length, direction, false);
+            // Create an swept circle along the circle
+            var sweep = new Sweep(circle, Circle, 0, 0, 0, false);
 
-            rep.SolidOperations.Add(extrusion);
+            rep.SolidOperations.Add(sweep);
 
-            // Add a spherical point at each vertex of the polyline
-            foreach (var vertex in lineVertices)
+            // Add a spherical point at each specified point of the Circle
+            foreach (var vertex in circleVertices)
             {
                 var sphere = Mesh.Sphere(pointRadius, 10);
 
@@ -84,8 +81,6 @@ namespace Elements
                         modifiedVertices.Add(svertex);
                     }
                 }
-
-                // List<Polygon> polygons = new List<Polygon>();
 
                 foreach (var triangle in sphere.Triangles)
                 {

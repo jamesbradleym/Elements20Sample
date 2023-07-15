@@ -5,14 +5,14 @@ using Newtonsoft.Json;
 
 namespace Elements
 {
-    public class Curvework : GeometricElement
+    public class Bezierwork : GeometricElement
     {
 
         public Bezier Bezier { get; set; }
         [JsonProperty("Add Id")]
         public string AddId { get; set; }
 
-        public Curvework(CurvesOverrideAddition add)
+        public Bezierwork(BeziersOverrideAddition add)
         {
             this.Bezier = new Bezier(add.Value.Polyline.Vertices.ToList());
             this.AddId = add.Id;
@@ -20,18 +20,18 @@ namespace Elements
             SetMaterial();
         }
 
-        public Curvework(Bezier bezier)
+        public Bezierwork(Bezier bezier)
         {
             Bezier = bezier;
             SetMaterial();
         }
 
-        public bool Match(CurvesIdentity identity)
+        public bool Match(BeziersIdentity identity)
         {
             return identity.AddId == this.AddId;
         }
 
-        public Curvework Update(CurvesOverride edit)
+        public Bezierwork Update(BeziersOverride edit)
         {
             this.Bezier = new Bezier(edit.Value.Polyline.Vertices.ToList());
             return this;
@@ -64,7 +64,7 @@ namespace Elements
             var circle = new Circle(circleRadius).ToPolygon();
 
             // Create an extruded circle along the line
-            var sweep = new Sweep(circle, Bezier, 1, 1, 1, false);
+            var sweep = new Sweep(circle, Bezier, 0, 0, 0, false);
 
             rep.SolidOperations.Add(sweep);
 
