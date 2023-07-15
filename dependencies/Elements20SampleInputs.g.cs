@@ -29,15 +29,16 @@ namespace Elements20Sample
     {
         [Newtonsoft.Json.JsonConstructor]
         
-        public Elements20SampleInputs(Overrides @overrides, string bucketName, string uploadsBucket, Dictionary<string, string> modelInputKeys, string gltfKey, string elementsKey, string ifcKey):
+        public Elements20SampleInputs(double @parameter, Overrides @overrides, string bucketName, string uploadsBucket, Dictionary<string, string> modelInputKeys, string gltfKey, string elementsKey, string ifcKey):
         base(bucketName, uploadsBucket, modelInputKeys, gltfKey, elementsKey, ifcKey)
         {
             var validator = Validator.Instance.GetFirstValidatorForType<Elements20SampleInputs>();
             if(validator != null)
             {
-                validator.PreConstruct(new object[]{ @overrides});
+                validator.PreConstruct(new object[]{ @parameter, @overrides});
             }
         
+            this.Parameter = @parameter;
             this.Overrides = @overrides ?? this.Overrides;
         
             if(validator != null)
@@ -45,6 +46,10 @@ namespace Elements20Sample
                 validator.PostConstruct(this);
             }
         }
+    
+        [Newtonsoft.Json.JsonProperty("Parameter", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [System.ComponentModel.DataAnnotations.Range(0.0D, 1.0D)]
+        public double Parameter { get; set; } = 0.5D;
     
         [Newtonsoft.Json.JsonProperty("overrides", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public Overrides Overrides { get; set; } = new Overrides();

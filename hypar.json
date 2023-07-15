@@ -4,6 +4,18 @@
   "name": "Elements 2.0 Sample",
   "description": "The Elements20Sample function.",
   "language": "C#",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "Parameter": {
+        "type": "number",
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "$hyparUnitType": "none",
+        "default": 0.5
+      }
+    }
+  },
   "overrides": {
     "Lines": {
       "context": "[*discriminator=Elements.Linework]",

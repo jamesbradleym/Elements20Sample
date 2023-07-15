@@ -11,17 +11,21 @@ namespace Elements
         public Polyline Polyline { get; set; }
         [JsonProperty("Add Id")]
         public string AddId { get; set; }
+        public bool ShowPoints { get; set; }
 
-        public Polylinework(PolylinesOverrideAddition add)
+        public Polylinework(PolylinesOverrideAddition add, bool showpoints = true)
         {
             this.Polyline = add.Value.Polyline;
             this.AddId = add.Id;
 
+            this.ShowPoints = showpoints;
             SetMaterial();
         }
-        public Polylinework(Polyline polyline)
+        public Polylinework(Polyline polyline, bool showpoints = true)
         {
             Polyline = polyline;
+
+            this.ShowPoints = showpoints;
             SetMaterial();
         }
         public bool Match(PolylinesIdentity identity)
@@ -72,39 +76,42 @@ namespace Elements
             }
 
             // Add a spherical point at each vertex of the polyline
-            foreach (var vertex in Polyline.Vertices)
+            if (ShowPoints)
             {
-                var sphere = Mesh.Sphere(pointRadius, 10);
-
-
-                HashSet<Geometry.Vertex> modifiedVertices = new HashSet<Geometry.Vertex>();
-                // Translate the vertices of the mesh to center it at the origin
-                foreach (var svertex in sphere.Vertices)
+                foreach (var vertex in Polyline.Vertices)
                 {
-                    if (!modifiedVertices.Contains(svertex))
+                    var sphere = Mesh.Sphere(pointRadius, 10);
+
+
+                    HashSet<Geometry.Vertex> modifiedVertices = new HashSet<Geometry.Vertex>();
+                    // Translate the vertices of the mesh to center it at the origin
+                    foreach (var svertex in sphere.Vertices)
                     {
-                        svertex.Position += vertex;
-                        modifiedVertices.Add(svertex);
-                    }
-                }
-
-                // List<Polygon> polygons = new List<Polygon>();
-
-                foreach (var triangle in sphere.Triangles)
-                {
-                    var vertices = new List<Vector3>();
-
-                    foreach (var tvertex in triangle.Vertices)
-                    {
-                        // Convert Vector3D to Vector3
-                        var vector3 = new Vector3(tvertex.Position.X, tvertex.Position.Y, tvertex.Position.Z);
-                        vertices.Add(vector3);
+                        if (!modifiedVertices.Contains(svertex))
+                        {
+                            svertex.Position += vertex;
+                            modifiedVertices.Add(svertex);
+                        }
                     }
 
-                    // Create a Polygon from the triangle's vertices
-                    var polygon = new Polygon(vertices);
+                    // List<Polygon> polygons = new List<Polygon>();
 
-                    solidRep.AddFace(polygon);
+                    foreach (var triangle in sphere.Triangles)
+                    {
+                        var vertices = new List<Vector3>();
+
+                        foreach (var tvertex in triangle.Vertices)
+                        {
+                            // Convert Vector3D to Vector3
+                            var vector3 = new Vector3(tvertex.Position.X, tvertex.Position.Y, tvertex.Position.Z);
+                            vertices.Add(vector3);
+                        }
+
+                        // Create a Polygon from the triangle's vertices
+                        var polygon = new Polygon(vertices);
+
+                        solidRep.AddFace(polygon);
+                    }
                 }
             }
 

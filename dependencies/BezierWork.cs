@@ -23,6 +23,7 @@ namespace Elements
         public Bezierwork(Bezier bezier)
         {
             Bezier = bezier;
+            this.AddId = this.Id.ToString();
             SetMaterial();
         }
 

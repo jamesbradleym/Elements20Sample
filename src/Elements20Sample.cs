@@ -49,15 +49,15 @@ namespace Elements20Sample
                     {
                         foreach (var shape in HyparFont.LetterShapes[letter])
                         {
-                            if (shape is Polyline linework)
+                            if (shape is Polyline _linework)
                             {
-                                var _linework = new Polylinework(linework.TransformedPolyline(new Transform(new Vector3(offset, 0, 0))));
-                                polylineworks.Add(_linework);
+                                var lw = new Polylinework(_linework.TransformedPolyline(new Transform(new Vector3(offset, 0, 0))));
+                                polylineworks.Add(lw);
                             }
-                            else if (shape is Bezier bezierwork)
+                            else if (shape is Bezier _bezierwork)
                             {
-                                var _bezierwork = new Bezierwork(bezierwork.TransformedBezier(new Transform(new Vector3(offset, 0, 0))));
-                                bezierworks.Add(_bezierwork);
+                                var bw = new Bezierwork(_bezierwork.TransformedBezier(new Transform(new Vector3(offset, 0, 0))));
+                                bezierworks.Add(bw);
                             }
                         }
                         offset += 10;
@@ -70,45 +70,16 @@ namespace Elements20Sample
             output.Model.AddElements(bezierworks);
 
             List<object> curves = new List<object>();
-            curves.AddRange(lineworks);
-            curves.AddRange(polylineworks);
-            curves.AddRange(bezierworks);
-            foreach (var curve in curves)
-            {
-                if (curve is Polylinework linework)
-                {
-                    foreach (var segment in linework.Polyline.Segments())
-                    {
-                        var point = segment.PointAt(0.5 * segment.Length());
-                        var direction = segment.Direction();
-                        var size = 1;
-                        var mass = new Mass(Polygon.Rectangle(size, size), size);
-                        var center = mass.Bounds.Center() + new Vector3(0, 0, size / 2.0) + mass.Transform.Origin;
-
-                        mass.Transform = new Transform(-1 * center).Concatenated(new Transform(new Plane(point, direction)));
-
-                        output.Model.AddElement(mass);
-                    }
-                }
-                else if (curve is Bezierwork bezierwork)
-                {
-                    var point = bezierwork.Bezier.PointAt(0.5);
-                    var direction = bezierwork.Bezier.NormalAt(0.5);
-                    var size = 1;
-                    var mass = new Mass(Polygon.Rectangle(size, size), size);
-                    var center = mass.Bounds.Center() + new Vector3(0, 0, size / 2.0) + mass.Transform.Origin;
-                    mass.Transform = new Transform(-1 * center).Concatenated(new Transform(new Plane(point, direction)));
-                    output.Model.AddElement(mass);
-                }
-            }
 
             /// CIRCLE
             var circle = new Circle(new Vector3(-10, 5, 0), 4);
-            output.Model.AddElement(new Circlework(circle));
+            var circlework = new Circlework(circle);
+            output.Model.AddElement(circlework);
 
             /// ARC
             var arc = new Arc(new Vector3(15, -10, 0), 4, 0.0, 270.0);
-            output.Model.AddElement(new Arcwork(arc));
+            var arcwork = new Arcwork(arc);
+            output.Model.AddElement(arcwork);
 
             /// ELLIPSE
             var ellipse = new Ellipse(new Vector3(35, -10, 0), 2, 4);
@@ -126,7 +97,8 @@ namespace Elements20Sample
             var polylineEllipse = new Polyline(points);
 
             // Add the polyline to the model
-            output.Model.AddElement(new Polylinework(polylineEllipse));
+            output.Model.AddElement(new Polylinework(polylineEllipse, false));
+            var ellipsework = ellipse;
 
             /// POLYLINE
             var polyline = new Polyline(
@@ -145,12 +117,15 @@ namespace Elements20Sample
                     new Vector3(65, 10, 0),
                 }
             );
-
-            output.Model.AddElement(new Polylinework(polyline));
+            var polylinework = new Polylinework(polyline);
+            polylineworks.Add(polylinework);
+            output.Model.AddElement(polylinework);
 
             /// LINE
             var line = new Line(new Vector3(35, 15, 0), new Vector3(35, 25, 0));
-            output.Model.AddElement(new Linework(line));
+            var linework = new Linework(line);
+            lineworks.Add(linework);
+            output.Model.AddElement(linework);
 
             /// BEZIER
             var bezier = new Bezier(
@@ -162,8 +137,94 @@ namespace Elements20Sample
                     new Vector3(20, 20, 0)
                 }
             );
+            var bezierwork = new Bezierwork(bezier);
+            output.Model.AddElement(bezierwork);
+            bezierworks.Add(bezierwork);
 
-            output.Model.AddElement(new Bezierwork(bezier));
+
+            curves.AddRange(lineworks);
+            curves.AddRange(polylineworks);
+            curves.AddRange(bezierworks);
+            curves.Add(circlework);
+            curves.Add(arcwork);
+            curves.Add(ellipsework);
+
+            var parameter = input.Parameter;
+            var directionMod = 0.01;
+            foreach (var curve in curves)
+            {
+                if (curve is Polylinework _polylinework)
+                {
+                    foreach (var segment in _polylinework.Polyline.Segments())
+                    {
+                        var point = segment.PointAt(parameter * segment.Length());
+                        var direction = segment.Direction();
+                        var size = 1;
+                        var mass = new Mass(Polygon.Rectangle(size, size), size);
+                        var center = mass.Bounds.Center() + new Vector3(0, 0, size / 2.0) + mass.Transform.Origin;
+
+                        mass.Transform = new Transform(-1 * center).Concatenated(new Transform(new Plane(point, direction)));
+
+                        output.Model.AddElement(mass);
+                    }
+                }
+                else if (curve is Linework _linework)
+                {
+                    var parameterMod = parameter * _linework.Line.Length();
+                    var point = _linework.Line.PointAt(parameterMod);
+                    var direction = _linework.Line.Direction();
+                    var size = 1;
+                    var mass = new Mass(Polygon.Rectangle(size, size), size);
+                    var center = mass.Bounds.Center() + new Vector3(0, 0, size / 2.0) + mass.Transform.Origin;
+
+                    mass.Transform = new Transform(-1 * center).Concatenated(new Transform(new Plane(point, direction)));
+
+                    output.Model.AddElement(mass);
+                }
+                else if (curve is Bezierwork _bezierwork)
+                {
+                    var point = _bezierwork.Bezier.PointAt(parameter);
+                    var direction = _bezierwork.Bezier.PointAt(parameter) - _bezierwork.Bezier.PointAt(parameter + directionMod);
+                    var size = 1;
+                    var mass = new Mass(Polygon.Rectangle(size, size), size);
+                    var center = mass.Bounds.Center() + new Vector3(0, 0, size / 2.0) + mass.Transform.Origin;
+                    mass.Transform = new Transform(-1 * center).Concatenated(new Transform(new Plane(point, direction)));
+                    output.Model.AddElement(mass);
+                }
+                else if (curve is Circlework _circlework)
+                {
+                    var parameterMod = parameter * (2 * Math.PI);
+                    var point = _circlework.Circle.PointAt(parameterMod);
+                    var direction = _circlework.Circle.PointAt(parameterMod) - _circlework.Circle.PointAt(parameterMod + directionMod);
+                    var size = 1;
+                    var mass = new Mass(Polygon.Rectangle(size, size), size);
+                    var center = mass.Bounds.Center() + new Vector3(0, 0, size / 2.0) + mass.Transform.Origin;
+                    mass.Transform = new Transform(-1 * center).Concatenated(new Transform(new Plane(point, direction)));
+                    output.Model.AddElement(mass);
+                }
+                else if (curve is Arcwork _arcwork)
+                {
+                    var parameterMod = parameter * _arcwork.Arc.Domain.Max;
+                    var point = _arcwork.Arc.PointAt(parameterMod);
+                    var direction = _arcwork.Arc.PointAt(parameterMod) - _arcwork.Arc.PointAt(parameterMod + directionMod);
+                    var size = 1;
+                    var mass = new Mass(Polygon.Rectangle(size, size), size);
+                    var center = mass.Bounds.Center() + new Vector3(0, 0, size / 2.0) + mass.Transform.Origin;
+                    mass.Transform = new Transform(-1 * center).Concatenated(new Transform(new Plane(point, direction)));
+                    output.Model.AddElement(mass);
+                }
+                else if (curve is Ellipse _ellipse)
+                {
+                    var parameterMod = parameter * (2 * Math.PI);
+                    var point = _ellipse.PointAt(parameterMod);
+                    var direction = _ellipse.PointAt(parameterMod) - _ellipse.PointAt(parameterMod + directionMod);
+                    var size = 1;
+                    var mass = new Mass(Polygon.Rectangle(size, size), size);
+                    var center = mass.Bounds.Center() + new Vector3(0, 0, size / 2.0) + mass.Transform.Origin;
+                    mass.Transform = new Transform(-1 * center).Concatenated(new Transform(new Plane(point, direction)));
+                    output.Model.AddElement(mass);
+                }
+            }
 
             return output;
         }

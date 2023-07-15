@@ -6,6 +6,7 @@ The Elements20Sample function.
 
 |Input Name|Type|Description|
 |---|---|---|
+|Parameter|number||
 
 
 <br>
