@@ -76,7 +76,7 @@ namespace Elements
             for (int i = 0; i < points.Count; i++)
             {
                 var vertex = points[i];
-                var sphere = Mesh.Sphere((i == 0 || i == Bezier.ControlPoints.Count) ? pointRadius : innerPointRadius, 10);
+                var sphere = Mesh.Sphere((i == 0 || i == points.Count - 1) ? pointRadius : innerPointRadius, 10);
 
                 HashSet<Geometry.Vertex> modifiedVertices = new HashSet<Geometry.Vertex>();
                 // Translate the vertices of the mesh to center it at the origin
